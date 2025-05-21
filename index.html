@@ -22,8 +22,12 @@
             <!-- 초기 로딩 화면 -->
             <div class="screen" id="loading-screen">
                 <div class="logo-container">
-                    <div class="logo">🚕</div>
-                    <h1>택시 배차 앱</h1>
+                    <div class="logo">
+                        <img src="logo.png" alt="택시 배차 앱 로고" class="logo-image">
+                    </div>
+                    <h1>모두가 즐거운 택시</h1>
+
+                    <p class="loading-text">잠시만 기다려주세요...</p>
                 </div>
                 <div class="loading-spinner"></div>
             </div>
@@ -74,17 +78,17 @@
             <div class="screen" id="main-screen" style="display: none;">
                 <h1>택시 호출</h1>
                 <div class="call-type-buttons">
-                    <button class="call-type-btn active" onclick="selectCallType('all')">
+                    <button class="call-type-btn active" data-type="모두콜">
                         <span class="icon">🚕</span>
                         <span class="label">모두콜</span>
                         <span class="description">가장 빠른 택시 배차</span>
                     </button>
-                    <button class="call-type-btn" onclick="selectCallType('instant')">
+                    <button class="call-type-btn" data-type="즉시콜">
                         <span class="icon">⚡</span>
                         <span class="label">즉시콜</span>
                         <span class="description">즉시 배차 가능 택시</span>
                     </button>
-                    <button class="call-type-btn" onclick="selectCallType('reserve')">
+                    <button class="call-type-btn" data-type="예약콜">
                         <span class="icon">📅</span>
                         <span class="label">예약콜</span>
                         <span class="description">원하는 시간에 예약</span>
@@ -108,11 +112,84 @@
             </div>
 
             <!-- 택시 호출 대기 화면 -->
-            <div class="screen" id="waiting-screen" style="display: none;">
-                <h2>택시 호출 중...</h2>
-                <div class="loading-spinner"></div>
-                <p>주변 택시를 찾고 있습니다</p>
-                <button class="cancel-btn" onclick="cancelCall()">취소하기</button>
+            <div id="waiting-screen" class="screen" style="display: none;">
+                <div class="waiting-container">
+                    <div class="waiting-header">
+                        <h2>함께 탑승할 승객을 찾는 중입니다</h2>
+                        <div class="waiting-timer">00:00</div>
+                    </div>
+                    
+                    <div class="waiting-status">
+                        <div class="status-icon">👥</div>
+                        <div class="status-text">현재 대기 중인 승객: <span class="waiting-count">0</span>명</div>
+                    </div>
+
+                    <div class="waiting-map">
+                        <div class="map-container">
+                            <img src="map.png" alt="지도" class="map-image">
+                            <div class="map-overlay">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="waiting-info">
+                        <div class="info-item">
+                            <span class="label">출발지</span>
+                            <span class="value">강남역</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">목적지</span>
+                            <span class="value">홍대입구역</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">예상 요금</span>
+                            <span class="value">₩12,000</span>
+                        </div>
+                    </div>
+
+                    <div class="waiting-actions">
+                        <button class="cancel-btn">대기 취소</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 같이 탈 사람 찾음 화면 -->
+            <div id="match-found-screen" class="screen" style="display: none;">
+                <div class="match-found-container">
+                    <div class="match-found-header">
+                        <div class="match-icon">🎉</div>
+                        <h2>같이 탈 사람을 찾았습니다!</h2>
+                    </div>
+
+                    <div class="match-info">
+                        <div class="match-details">
+                            <div class="match-item">
+                                <span class="label">함께 탑승할 승객</span>
+                                <span class="value">2명</span>
+                            </div>
+                            <div class="match-item">
+                                <span class="label">예상 요금</span>
+                                <span class="value">₩8,000</span>
+                            </div>
+                            <div class="match-item">
+                                <span class="label">할인율</span>
+                                <span class="value discount">33%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="match-map">
+                        <div class="map-container">
+                            <img src="map.png" alt="지도" class="map-image">
+                            <div class="map-overlay">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="match-actions">
+                        <button class="confirm-btn">확인</button>
+                    </div>
+                </div>
             </div>
 
             <!-- 택시 배차 완료 화면 -->
@@ -141,6 +218,216 @@
                     <img src="map.png" alt="지도" class="map-image">
                 </div>
                 <button class="home-btn" onclick="goToHome()">홈으로</button>
+            </div>
+
+            <!-- 결제 화면 -->
+            <div class="screen" id="payment-screen" style="display: none;">
+                <h1>결제</h1>
+                <div class="payment-section">
+                    <div class="payment-method">
+                        <h2>결제 수단</h2>
+                        <div class="payment-options">
+                            <div class="payment-option active">
+                                <span class="icon">💳</span>
+                                <span class="label">신용카드</span>
+                            </div>
+                            <div class="payment-option">
+                                <span class="icon">📱</span>
+                                <span class="label">간편결제</span>
+                            </div>
+                            <div class="payment-option">
+                                <span class="icon">💰</span>
+                                <span class="label">현금</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="saved-cards">
+                        <h2>저장된 카드</h2>
+                        <div class="card-list">
+                            <div class="card-item">
+                                <div class="card-info">
+                                    <span class="card-type">신한카드</span>
+                                    <span class="card-number">****-****-****-1234</span>
+                                </div>
+                                <div class="card-check">✓</div>
+                            </div>
+                            <div class="card-item">
+                                <div class="card-info">
+                                    <span class="card-type">국민카드</span>
+                                    <span class="card-number">****-****-****-5678</span>
+                                </div>
+                                <div class="card-check"></div>
+                            </div>
+                        </div>
+                        <button class="add-card-btn">+ 새 카드 등록</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 이용내역 화면 -->
+            <div class="screen" id="history-screen" style="display: none;">
+                <h1>이용내역</h1>
+                <div class="history-filters">
+                    <button class="filter-btn active">전체</button>
+                    <button class="filter-btn">이번 달</button>
+                    <button class="filter-btn">3개월</button>
+                </div>
+                <div class="history-list">
+                    <div class="history-item">
+                        <div class="history-info">
+                            <div class="route">
+                                <span class="start">강남역</span>
+                                <span class="arrow">→</span>
+                                <span class="end">홍대입구역</span>
+                            </div>
+                            <div class="details">
+                                <span class="date">2024.03.15</span>
+                                <span class="time">14:30</span>
+                                <span class="price">₩12,000</span>
+                            </div>
+                        </div>
+                        <div class="status completed">완료</div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-info">
+                            <div class="route">
+                                <span class="start">서울역</span>
+                                <span class="arrow">→</span>
+                                <span class="end">인천공항</span>
+                            </div>
+                            <div class="details">
+                                <span class="date">2024.03.10</span>
+                                <span class="time">09:15</span>
+                                <span class="price">₩65,000</span>
+                            </div>
+                        </div>
+                        <div class="status completed">완료</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 내정보 화면 -->
+            <div class="screen" id="profile-screen" style="display: none;">
+                <h1>내 정보</h1>
+                <div class="profile-section">
+                    <div class="profile-header">
+                        <div class="profile-image">
+                            <span class="avatar">👤</span>
+                        </div>
+                        <div class="profile-info">
+                            <h2>김모두</h2>
+                            <p class="email">modu@example.com</p>
+                        </div>
+                    </div>
+
+                    <div class="accessibility-info">
+                        <h3>교통약자 정보</h3>
+                        <div class="info-item">
+                            <span class="label">교통약자 유형</span>
+                            <span class="value">시각 장애</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">휠체어 사용</span>
+                            <span class="value">아니오</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-menu">
+                        <div class="menu-item">
+                            <span class="icon">👤</span>
+                            <span class="label">개인정보 수정</span>
+                            <span class="arrow">›</span>
+                        </div>
+                        <div class="menu-item">
+                            <span class="icon">🔔</span>
+                            <span class="label">알림 설정</span>
+                            <span class="arrow">›</span>
+                        </div>
+                        <div class="menu-item">
+                            <span class="icon">🔒</span>
+                            <span class="label">비밀번호 변경</span>
+                            <span class="arrow">›</span>
+                        </div>
+                        <div class="menu-item">
+                            <span class="icon">💳</span>
+                            <span class="label">결제 수단 관리</span>
+                            <span class="arrow">›</span>
+                        </div>
+                        <div class="menu-item">
+                            <span class="icon">❓</span>
+                            <span class="label">고객센터</span>
+                            <span class="arrow">›</span>
+                        </div>
+                    </div>
+                    <button class="logout-btn">로그아웃</button>
+                </div>
+            </div>
+
+            <!-- 예약콜 화면 -->
+            <div class="screen" id="reservation-screen" style="display: none;">
+                <h1>택시 예약</h1>
+                <div class="reservation-form">
+                    <div class="form-group">
+                        <label for="reserve-start-location">출발지</label>
+                        <input type="text" id="reserve-start-location" placeholder="출발지를 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="reserve-end-location">도착지</label>
+                        <input type="text" id="reserve-end-location" placeholder="도착지를 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="reserve-date">예약 날짜</label>
+                        <input type="date" id="reserve-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="reserve-time">예약 시간</label>
+                        <input type="time" id="reserve-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="reserve-passengers">승객 수</label>
+                        <select id="reserve-passengers">
+                            <option value="1">1명</option>
+                            <option value="2">2명</option>
+                            <option value="3">3명</option>
+                            <option value="4">4명</option>
+                        </select>
+                    </div>
+                    <div class="reservation-actions">
+                        <button class="reserve-btn" onclick="submitReservation()">예약하기</button>
+                        <button class="cancel-btn" onclick="showScreen('main-screen')">취소</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 예약 완료 화면 -->
+            <div class="screen" id="reservation-complete-screen" style="display: none;">
+                <div class="complete-container">
+                    <div class="complete-icon">✓</div>
+                    <h2>예약이 완료되었습니다</h2>
+                    <div class="reservation-details">
+                        <div class="info-item">
+                            <span class="label">출발지</span>
+                            <span class="value" id="complete-start">강남역</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">도착지</span>
+                            <span class="value" id="complete-end">홍대입구역</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">예약 날짜</span>
+                            <span class="value" id="complete-date">2024.03.20</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">예약 시간</span>
+                            <span class="value" id="complete-time">14:30</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">탑승 인원</span>
+                            <span class="value" id="complete-passengers">2명</span>
+                        </div>
+                    </div>
+                    <button class="home-btn" onclick="goToHome()">홈으로</button>
+                </div>
             </div>
         </div>
 
