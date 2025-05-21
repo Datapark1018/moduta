@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>택시 배차 앱</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- 상단 상태바 -->
+        <div class="status-bar">
+            <div class="time">12:30</div>
+            <div class="status-icons">
+                <span class="icon">📶</span>
+                <span class="icon">📡</span>
+                <span class="icon">🔋</span>
+            </div>
+        </div>
+
+        <div class="app-container">
+            <!-- 초기 로딩 화면 -->
+            <div class="screen" id="loading-screen">
+                <div class="logo-container">
+                    <div class="logo">🚕</div>
+                    <h1>택시 배차 앱</h1>
+                </div>
+                <div class="loading-spinner"></div>
+            </div>
+
+            <!-- 로그인 화면 -->
+            <div class="screen" id="login-screen" style="display: none;">
+                <h1>로그인</h1>
+                <div class="auth-form">
+                    <div class="input-group">
+                        <label for="login-email">이메일</label>
+                        <input type="email" id="login-email" placeholder="이메일을 입력하세요">
+                    </div>
+                    <div class="input-group">
+                        <label for="login-password">비밀번호</label>
+                        <input type="password" id="login-password" placeholder="비밀번호를 입력하세요">
+                    </div>
+                    <button class="login-btn" onclick="login()">로그인</button>
+                    <p class="auth-switch">계정이 없으신가요? <a href="#" onclick="showScreen('signup-screen')">회원가입</a></p>
+                </div>
+            </div>
+
+            <!-- 회원가입 화면 -->
+            <div class="screen" id="signup-screen" style="display: none;">
+                <h1>회원가입</h1>
+                <div class="auth-form">
+                    <div class="input-group">
+                        <label for="signup-name">이름</label>
+                        <input type="text" id="signup-name" placeholder="이름을 입력하세요">
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-email">이메일</label>
+                        <input type="email" id="signup-email" placeholder="이메일을 입력하세요">
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-password">비밀번호</label>
+                        <input type="password" id="signup-password" placeholder="비밀번호를 입력하세요">
+                    </div>
+                    <div class="input-group">
+                        <label for="signup-password-confirm">비밀번호 확인</label>
+                        <input type="password" id="signup-password-confirm" placeholder="비밀번호를 다시 입력하세요">
+                    </div>
+                    <button class="signup-btn" onclick="signup()">회원가입</button>
+                    <p class="auth-switch">이미 계정이 있으신가요? <a href="#" onclick="showScreen('login-screen')">로그인</a></p>
+                </div>
+            </div>
+
+            <!-- 메인 화면 -->
+            <div class="screen" id="main-screen" style="display: none;">
+                <h1>택시 호출</h1>
+                <div class="call-type-buttons">
+                    <button class="call-type-btn active" onclick="selectCallType('all')">
+                        <span class="icon">🚕</span>
+                        <span class="label">모두콜</span>
+                        <span class="description">가장 빠른 택시 배차</span>
+                    </button>
+                    <button class="call-type-btn" onclick="selectCallType('instant')">
+                        <span class="icon">⚡</span>
+                        <span class="label">즉시콜</span>
+                        <span class="description">즉시 배차 가능 택시</span>
+                    </button>
+                    <button class="call-type-btn" onclick="selectCallType('reserve')">
+                        <span class="icon">📅</span>
+                        <span class="label">예약콜</span>
+                        <span class="description">원하는 시간에 예약</span>
+                    </button>
+                </div>
+                <div class="location-inputs">
+                    <div class="input-group">
+                        <label for="start-location">출발지</label>
+                        <input type="text" id="start-location" placeholder="출발지를 입력하세요">
+                    </div>
+                    <div class="input-group">
+                        <label for="end-location">도착지</label>
+                        <input type="text" id="end-location" placeholder="도착지를 입력하세요">
+                    </div>
+                    <div id="reservation-time" class="input-group" style="display: none;">
+                        <label for="reserve-time">예약 시간</label>
+                        <input type="datetime-local" id="reserve-time">
+                    </div>
+                </div>
+                <button class="call-taxi-btn" onclick="callTaxi()">택시 호출하기</button>
+            </div>
+
+            <!-- 택시 호출 대기 화면 -->
+            <div class="screen" id="waiting-screen" style="display: none;">
+                <h2>택시 호출 중...</h2>
+                <div class="loading-spinner"></div>
+                <p>주변 택시를 찾고 있습니다</p>
+                <button class="cancel-btn" onclick="cancelCall()">취소하기</button>
+            </div>
+
+            <!-- 택시 배차 완료 화면 -->
+            <div class="screen" id="success-screen" style="display: none;">
+                <h2>택시 배차 완료!</h2>
+                <div class="driver-info">
+                    <p class="info-title">기사님 정보</p>
+                    <div class="info-item">
+                        <span class="label">이름</span>
+                        <span class="value">김택시</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">연락처</span>
+                        <span class="value">010-1234-5678</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">차량번호</span>
+                        <span class="value">12가 3456</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">도착 예정 시간</span>
+                        <span class="value">3분</span>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <img src="map.png" alt="지도" class="map-image">
+                </div>
+                <button class="home-btn" onclick="goToHome()">홈으로</button>
+            </div>
+        </div>
+
+        <!-- 하단 네비게이션 바 -->
+        <div class="nav-bar">
+            <div class="nav-item active">
+                <span class="icon">🚕</span>
+                <span class="label">택시</span>
+            </div>
+            <div class="nav-item">
+                <span class="icon">📋</span>
+                <span class="label">이용내역</span>
+            </div>
+            <div class="nav-item">
+                <span class="icon">💳</span>
+                <span class="label">결제</span>
+            </div>
+            <div class="nav-item">
+                <span class="icon">👤</span>
+                <span class="label">내정보</span>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
